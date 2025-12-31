@@ -279,7 +279,6 @@
                             <span class="text-sm font-black text-slate-700 font-mono leading-none">{{ item.startTime }}</span>
                             <span v-if="item.endTime" class="text-[10px] text-slate-400 font-mono mt-1">{{ item.endTime }}</span>
                         </div>
-
                         <!-- 2. 中間軸線與地標ICON -->
                         <div class="relative w-4 flex flex-col items-center flex-shrink-0">
                             <!-- 連接線 -->
@@ -290,7 +289,6 @@
                                    :class="getCategoryTheme(item.category).text"></i>
                             </div>
                         </div>
-
                         <!-- 3. 右側卡片 -->
                         <div class="flex-1 pl-3 pb-5 min-w-0" @click="openEditModal(item, index)">
                             <div class="bg-white rounded-2xl p-3 card-shadow relative overflow-hidden active:scale-[0.98] transition-all"
@@ -341,7 +339,6 @@
                                             <i class="fa-solid fa-location-arrow text-xs"></i>
                                         </button>
                                     </div>
-
                                     <!-- 資訊欄位區 -->
                                     <div v-if="item.openTime || (item.ticketCost && item.category === 'sightseeing')" class="mt-2 pt-2 border-t border-slate-50 grid grid-cols-2 gap-2">
                                         <div v-if="item.openTime" class="flex items-center text-[10px] text-slate-500">
@@ -506,14 +503,32 @@
             <div v-else-if="currentTab === 'expenses'" key="expenses" class="space-y-4 pt-2 pb-20">
                 <div class="bg-gradient-to-br from-deep-sea-blue to-cyan-800 text-white p-6 rounded-3xl shadow-xl relative overflow-hidden">
                     <div class="absolute -right-8 -top-8 w-40 h-40 bg-white/10 rounded-full blur-3xl"></div>
-                    <p class="text-xs text-cyan-200 uppercase tracking-widest font-medium mb-1">Total Expenses</p>
-                    <h2 class="text-4xl font-bold font-mono tracking-tight mb-4">¥ {{ totalExpenses.toLocaleString() }}</h2>
-                    <div class="flex items-center space-x-2 bg-white/10 rounded-lg p-2 inline-block backdrop-blur-sm border border-white/5">
-                        <span class="text-xs text-cyan-100">約 NT$</span>
-                        <span class="text-lg font-bold">{{ Math.round(totalExpenses * 0.22).toLocaleString() }}</span>
+                    <p class="text-xs text-cyan-200 uppercase tracking-widest font-medium mb-1">Total Expenses (NT$)</p>
+                    <h2 class="text-4xl font-bold font-mono tracking-tight mb-2">NT$ {{ totalExpensesTWD.toLocaleString() }}</h2>
+                    
+                    <!-- 分類統計：現金 vs 信用卡 -->
+                    <div class="flex justify-between mt-4 pt-4 border-t border-white/20">
+                        <div>
+                            <div class="text-[10px] text-cyan-200 opacity-80 mb-0.5"><i class="fa-solid fa-money-bill-wave mr-1"></i>現金 (NT$)</div>
+                            <div class="text-lg font-bold font-mono">{{ expenseStats.cash.toLocaleString() }}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-[10px] text-cyan-200 opacity-80 mb-0.5">信用卡 (NT$)<i class="fa-regular fa-credit-card ml-1"></i></div>
+                            <div class="text-lg font-bold font-mono">{{ expenseStats.card.toLocaleString() }}</div>
+                        </div>
+                    </div>
+
+                    <!-- 日幣總計 (放到下方角落) -->
+                    <div class="absolute top-4 right-4 bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/5">
+                        <span class="text-[10px] text-cyan-100 block text-right">約 JPY</span>
+                        <span class="text-base font-bold">¥{{ Math.round(totalExpensesJPY).toLocaleString() }}</span>
                     </div>
                 </div>
+                
                 <div class="bg-white rounded-3xl card-shadow px-4 py-2">
+                    <div v-if="expenses.length === 0" class="py-10 text-center text-slate-300 text-sm">
+                        尚無記帳資料
+                    </div>
                     <div v-for="(exp, idx) in sortedExpenses" :key="idx" class="py-4 border-b border-slate-50 last:border-0 flex justify-between items-center group relative">
                         <button @click="deleteExpense(idx)" class="absolute right-0 bg-red-50 text-red-400 px-2 py-1 rounded text-xs opacity-0 group-hover:opacity-100 transition-opacity"><i class="fa-solid fa-trash-can"></i></button>
                         <div class="flex items-center space-x-3">
@@ -522,10 +537,21 @@
                             </div>
                             <div>
                                 <div class="font-bold text-sm text-slate-700">{{ exp.name }}</div>
-                                <div class="text-[10px] text-slate-400">{{ exp.date.slice(5) }} · {{ exp.payment }}</div>
+                                <div class="text-[10px] text-slate-400 flex items-center gap-1">
+                                    {{ exp.date.slice(5) }} · 
+                                    <span :class="exp.payment === '信用卡' ? 'text-blue-400' : 'text-orange-400'">{{ exp.payment }}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="text-right font-bold text-slate-700 font-mono">¥{{ parseInt(exp.amount).toLocaleString() }}</div>
+                        <div class="text-right">
+                            <div class="font-bold text-slate-700 font-mono">
+                                {{ exp.currency === 'TWD' ? 'NT$' : '¥' }}{{ parseInt(exp.amount).toLocaleString() }}
+                            </div>
+                            <!-- 如果是日幣，顯示約合台幣 -->
+                            <div v-if="exp.currency === 'JPY'" class="text-[9px] text-slate-400 font-mono">
+                                ≈ NT${{ Math.round(parseInt(exp.amount) * 0.22).toLocaleString() }}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <button @click="openExpenseModal" class="fixed bottom-6 right-6 w-14 h-14 bg-emerald-400 text-white rounded-full shadow-[0_4px_15px_rgba(52,211,153,0.4)] flex items-center justify-center text-xl z-40 hover:scale-110 transition-transform"><i class="fa-solid fa-pen"></i></button>
@@ -551,7 +577,6 @@
                     <i class="fa-regular fa-clock text-slate-300"></i>
                     <input v-model="formItinerary.openTime" placeholder="營業時間 (例: 09:00-17:00)" class="flex-1 bg-slate-50 rounded-xl p-2 text-sm outline-none">
                 </div>
-
                 <div class="bg-blue-50/50 p-2 rounded-xl flex items-center space-x-2 border border-blue-50">
                     <span class="text-[10px] text-blue-400 font-bold whitespace-nowrap px-1">下一站</span>
                     <select v-model="formItinerary.transportType" class="bg-white rounded-lg p-1.5 text-xs outline-none text-slate-600">
@@ -597,6 +622,18 @@
         <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl">
             <h3 class="text-lg font-bold mb-4 text-center text-slate-800">記帳</h3>
             <div class="space-y-4">
+                <!-- 幣別切換 -->
+                <div class="flex space-x-2 bg-slate-50 p-1 rounded-xl">
+                    <button @click="formExpense.currency='JPY'" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all" 
+                            :class="formExpense.currency==='JPY' ? 'bg-white shadow text-deep-sea-blue' : 'text-slate-400'">
+                        日幣 (¥)
+                    </button>
+                    <button @click="formExpense.currency='TWD'" class="flex-1 py-1.5 rounded-lg text-xs font-bold transition-all" 
+                            :class="formExpense.currency==='TWD' ? 'bg-white shadow text-deep-sea-blue' : 'text-slate-400'">
+                        台幣 (NT$)
+                    </button>
+                </div>
+
                 <div class="flex flex-wrap gap-2">
                     <button v-for="cat in expenseCategories" @click="formExpense.category = cat.val" 
                         class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors" 
@@ -604,8 +641,8 @@
                 </div>
                 <input v-model="formExpense.name" placeholder="項目" class="w-full bg-slate-50 rounded-xl p-3 text-sm outline-none">
                 <div class="relative">
-                    <span class="absolute left-3 top-3 text-slate-400 font-bold">¥</span>
-                    <input v-model="formExpense.amount" type="number" class="w-full bg-slate-50 rounded-xl p-3 pl-8 text-lg font-bold font-mono outline-none">
+                    <span class="absolute left-3 top-3 text-slate-400 font-bold font-mono">{{ formExpense.currency === 'TWD' ? 'NT$' : '¥' }}</span>
+                    <input v-model="formExpense.amount" type="number" class="w-full bg-slate-50 rounded-xl p-3 pl-12 text-lg font-bold font-mono outline-none">
                 </div>
                 <div class="flex space-x-2">
                     <button @click="formExpense.payment='現金'" :class="formExpense.payment==='現金'?'bg-accent-yellow text-deep-sea-blue':'bg-slate-50 text-slate-400'" class="flex-1 py-2 rounded-xl text-xs font-bold transition-colors">現金</button>
@@ -633,37 +670,31 @@
                 { id: 'expenses', icon: 'fa-solid fa-yen-sign' },
             ];
             
-            // --- 圖片處理邏輯 (已修復：優先抓取 lia.jpg) ---
+            // --- 圖片處理邏輯 ---
             const localFile = 'lia.jpg';
             const onlineFallback = 'https://images.unsplash.com/photo-1548265005-728b704c3298?q=80&w=2070&auto=format&fit=crop';
             
-            // 更新 Storage Key 以避免讀到舊資料
             const STORAGE_KEY = 'zao_cover_2026_fixed_v3';
             const storedCover = localStorage.getItem(STORAGE_KEY);
             
-            // 判斷邏輯：如果是使用者上傳的 base64 圖片，就用使用者上傳的；否則預設用 lia.jpg
             const isUserUploaded = storedCover && storedCover.startsWith('data:image');
             const coverImage = ref(isUserUploaded ? storedCover : localFile);
             
-            // 圖片讀取錯誤時的備案 (如果 lia.jpg 不在資料夾)
             const handleImageError = (e) => {
                 if (e.target.src === onlineFallback) return;
                 console.warn('Local image not found, using fallback.');
                 e.target.src = onlineFallback;
             };
             
-            // 重置功能
             const resetCover = () => {
                 localStorage.removeItem(STORAGE_KEY);
-                coverImage.value = localFile; // 強制設為 lia.jpg
-                // 為了觸發 DOM 更新，強制重整
+                coverImage.value = localFile; 
                 setTimeout(() => {
                     const img = document.querySelector('.header-image-container img');
                     if(img) img.src = localFile;
                 }, 50);
                 alert('已重置為預設圖片 (lia.jpg)。');
             };
-
             const fileInput = ref(null);
             const triggerFileInput = () => fileInput.value.click();
             const handleImageUpload = (e) => { 
@@ -696,7 +727,7 @@
                 ];
                 return map[selectedDayIndex.value] || map[0];
             });
-            // 行程資料 (保持邏輯)
+            // 行程資料
             const defaultItinerary = {
                 0: [ 
                     { id: 101, category: 'flight', name: 'JX804 TPE->NRT', startTime: '15:00', endTime: '19:00', note: '第一航廈出發。抵達後記得：\n1. 領取 SIM 卡/WiFi\n2. 購買/儲值 Suica', transportType: 'public', transportTime: 120, openTime: '' },
@@ -777,13 +808,11 @@
                 };
                 return themes[c] || { icon: 'fa-solid fa-star', text: 'text-slate-400', bgLight: 'bg-slate-100', dot: 'bg-slate-300' };
             };
-            // Retrofit for v-bind:class binding (if needed) or direct use
-            const getCategoryColor = (c) => getCategoryTheme(c).dot; // Fallback for old refs if any
-
+            const getCategoryColor = (c) => getCategoryTheme(c).dot;
             const getTransportIcon = (t) => ({walk:'fa-solid fa-person-walking',car:'fa-solid fa-car',public:'fa-solid fa-train-subway'}[t]||'fa-solid fa-arrow-right');
             const openMap = (q) => window.open(`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(q)}`, '_blank');
             
-            // Icon Helper for Shopping List
+            // Icon Helper
             const getShoppingIcon = (name) => {
                 if(!name) return 'fa-solid fa-bag-shopping';
                 if(name.includes('衣') || name.includes('褲') || name.includes('服') || name.includes('UNIQLO') || name.includes('GU')) return 'fa-solid fa-shirt';
@@ -796,7 +825,6 @@
                 if(name.includes('電') || name.includes('充')) return 'fa-solid fa-plug';
                 return 'fa-solid fa-gift';
             };
-
             // --- Modals Logic ---
             const showItineraryModal = ref(false);
             const isEditing = ref(false);
@@ -882,26 +910,106 @@
             const quickAddPacking = () => { if(newPackingItem.value) { lists.value.packing.push({name:newPackingItem.value, checked:false}); newPackingItem.value=''; }};
             // Recommendation
             const recommendations = [
-                {name:'樹冰羅曼', city:'山形', icon:' 🏔 ️'}, {name:'乃し梅', city:'山形', icon:' 🍑 '}, 
-                {name:'萩之月', city:'仙台', icon:' 🌕 '}, {name:'喜久福', city:'仙台', icon:' 🍵 '},
-                {name:'NY Cheese', city:'東京', icon:' 🧀 '}, {name:'Press Butter', city:'東京', icon:' 🍪 '}
+                {name:'樹冰羅曼', city:'山形', icon:'  🏔  ️'}, {name:'乃し梅', city:'山形', icon:'  🍑  '}, 
+                {name:'萩之月', city:'仙台', icon:'  🌕  '}, {name:'喜久福', city:'仙台', icon:'  🍵  '},
+                {name:'NY Cheese', city:'東京', icon:'  🧀  '}, {name:'Press Butter', city:'東京', icon:'  🍪  '}
             ];
             const addRecItem = (rec) => {
                 if(confirm(`加入 ${rec.name} ?`)) lists.value.shopping.push({name:rec.name, image:null, checked:false});
             };
-            // Expenses
+            
+            // --- Expenses Logic Updated for Multi-Currency ---
             const showExpenseModal = ref(false);
-            const expenses = ref(JSON.parse(localStorage.getItem('zao_expenses_2026_snow')) || []);
+            // 升級 Storage Key，避免資料衝突
+            const expenses = ref(JSON.parse(localStorage.getItem('zao_expenses_2026_snow_v2')) || []);
             const formExpense = ref({});
             const expenseCategories = [{val:'transport',label:'交通'},{val:'food',label:'飲食'},{val:'hotel',label:'住宿'},{val:'shopping',label:'購物'},{val:'other',label:'其他'}];
             
-            const totalExpenses = computed(()=>expenses.value.reduce((a,c)=>a+parseInt(c.amount||0),0));
+            // 匯率常數
+            const RATE_JPY_TO_TWD = 0.22;
+            
+            // 1. 計算總台幣 (所有項目都換算成台幣加總)
+            const totalExpensesTWD = computed(() => {
+                return expenses.value.reduce((total, item) => {
+                    let amount = parseInt(item.amount || 0);
+                    // 如果是日幣，乘以匯率變成台幣 (並四捨五入)
+                    if (item.currency === 'JPY') {
+                        return total + Math.round(amount * RATE_JPY_TO_TWD);
+                    }
+                    // 如果是台幣，直接加
+                    return total + amount;
+                }, 0);
+            });
+
+            // 2. 計算總日幣 (所有項目都換算成日幣加總，顯示用)
+            const totalExpensesJPY = computed(() => {
+                return expenses.value.reduce((total, item) => {
+                    let amount = parseInt(item.amount || 0);
+                    // 如果是台幣，除以匯率變成日幣 (並四捨五入)
+                    if (item.currency === 'TWD') {
+                        return total + Math.round(amount / RATE_JPY_TO_TWD);
+                    }
+                    // 如果是日幣，直接加
+                    return total + amount;
+                }, 0);
+            });
+
+            // 3. 分類統計：現金 vs 信用卡 (都以台幣計算)
+            const expenseStats = computed(() => {
+                let cash = 0;
+                let card = 0;
+                
+                expenses.value.forEach(item => {
+                    let amount = parseInt(item.amount || 0);
+                    let valInTWD = 0;
+
+                    // 統一換算成台幣
+                    if (item.currency === 'JPY') {
+                        valInTWD = Math.round(amount * RATE_JPY_TO_TWD);
+                    } else {
+                        valInTWD = amount;
+                    }
+
+                    if (item.payment === '信用卡') {
+                        card += valInTWD;
+                    } else {
+                        cash += valInTWD;
+                    }
+                });
+                return { cash, card };
+            });
+
             const sortedExpenses = computed(()=>[...expenses.value].reverse());
-            const openExpenseModal = () => { formExpense.value={category:'food',name:'',amount:'',payment:'現金',date:tripDays[selectedDayIndex.value].fullDate}; showExpenseModal.value=true; };
-            const saveExpense = () => { expenses.value.push({...formExpense.value}); localStorage.setItem('zao_expenses_2026_snow',JSON.stringify(expenses.value)); showExpenseModal.value=false; };
-            const deleteExpense = (idx) => { if(confirm('刪除?')) { expenses.value.splice(expenses.value.length-1-idx,1); localStorage.setItem('zao_expenses_2026_snow',JSON.stringify(expenses.value)); }};
+            
+            const openExpenseModal = () => { 
+                // 預設 currency 為 JPY
+                formExpense.value = {
+                    currency: 'JPY',
+                    category: 'food',
+                    name: '',
+                    amount: '',
+                    payment: '現金',
+                    date: tripDays[selectedDayIndex.value].fullDate
+                }; 
+                showExpenseModal.value = true; 
+            };
+            
+            const saveExpense = () => { 
+                expenses.value.push({...formExpense.value}); 
+                localStorage.setItem('zao_expenses_2026_snow_v2', JSON.stringify(expenses.value)); 
+                showExpenseModal.value = false; 
+            };
+            
+            const deleteExpense = (idx) => { 
+                if(confirm('刪除?')) { 
+                    expenses.value.splice(expenses.value.length - 1 - idx, 1); 
+                    localStorage.setItem('zao_expenses_2026_snow_v2', JSON.stringify(expenses.value)); 
+                }
+            };
+            
             const getExpenseColor = (c) => ({transport:'bg-orange-400',food:'bg-red-400',hotel:'bg-indigo-400',shopping:'bg-purple-400'}[c]||'bg-slate-400');
             const getExpenseIcon = (c) => ({transport:'fa-solid fa-train',food:'fa-solid fa-utensils',hotel:'fa-solid fa-bed',shopping:'fa-solid fa-bag-shopping'}[c]||'fa-solid fa-coins');
+            
             return {
                 currentTab, tabs, coverImage, triggerFileInput, handleImageUpload, fileInput,
                 tripDays, selectedDayIndex, weatherInfo,
@@ -910,7 +1018,7 @@
                 exchangeInput, exchangeResult, hotels,
                 currentListType, listTypes, currentListTypeName, lists, showListModal, formList, openListModal, handleListImage, saveListItem, deleteListItem, 
                 newPackingItem, quickAddPacking, recommendations, addRecItem,
-                expenses, sortedExpenses, totalExpenses, showExpenseModal, formExpense, expenseCategories, openExpenseModal, saveExpense, deleteExpense, getExpenseColor, getExpenseIcon,
+                expenses, sortedExpenses, totalExpensesJPY, totalExpensesTWD, expenseStats, showExpenseModal, formExpense, expenseCategories, openExpenseModal, saveExpense, deleteExpense, getExpenseColor, getExpenseIcon,
                 getShoppingIcon, handleImageError, resetCover
             };
         }
