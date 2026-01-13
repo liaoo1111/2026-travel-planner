@@ -517,7 +517,6 @@
                             <div class="text-lg font-bold font-mono">{{ expenseStats.card.toLocaleString() }}</div>
                         </div>
                     </div>
-
                     <!-- 日幣總計 (放到下方角落) -->
                     <div class="absolute top-4 right-4 bg-white/10 rounded-lg p-2 backdrop-blur-sm border border-white/5">
                         <span class="text-[10px] text-cyan-100 block text-right">約 JPY</span>
@@ -633,7 +632,6 @@
                         台幣 (NT$)
                     </button>
                 </div>
-
                 <div class="flex flex-wrap gap-2">
                     <button v-for="cat in expenseCategories" @click="formExpense.category = cat.val" 
                         class="px-3 py-1.5 rounded-lg text-xs font-bold border transition-colors" 
@@ -730,60 +728,60 @@
             // 行程資料
             const defaultItinerary = {
                 0: [ 
-                    { id: 101, category: 'flight', name: 'JX804 TPE->NRT', startTime: '15:00', endTime: '19:00', note: '第一航廈出發。抵達後記得：\n1. 領取 SIM 卡/WiFi\n2. 購買/儲值 Suica', transportType: 'public', transportTime: 120, openTime: '' },
-                    { id: 102, category: 'transport', name: '利木津巴士 -> 池袋', startTime: '20:00', endTime: '21:35', note: '購票處：成田二航 1F 入境大廳。約 21:35 抵達飯店', transportType: 'walk', transportTime: 5, openTime: '07:00-23:00' },
-                    { id: 103, category: 'hotel', name: '太陽城王子大飯店 Check-in', startTime: '21:35', endTime: '22:00', note: '池袋', transportType: 'walk', transportTime: 10, openTime: '24H' },
-                    { id: 104, category: 'food', name: '晚餐：一蘭 或 西友超市', startTime: '22:00', endTime: '23:00', note: '一蘭池袋店 (24h)。\n★記得去超市/超商買明天的早餐！', transportType: 'walk', transportTime: 0, openTime: '24H' }
+                    { id: 101, category: 'flight', name: 'JX804 TPE→NRT', startTime: '15:00', endTime: '19:00', note: '第一航廈出發。抵達後記得：\n1. 領取 SIM 卡/WiFi\n2. 購買/儲值 Suica', transportType: 'public', transportTime: 120, openTime: '' },
+                    { id: 102, category: 'transport', name: '成田機場第二航廈', startTime: '20:00', endTime: '21:35', note: 'A : 利木津巴士 → 東京車站 → 八丁堀站\nB : SKYLINER → 東京車站 → 八丁堀站\n購票處：成田二航 1F 入境大廳。\n預計約 21:35 抵達飯店', transportType: 'walk', transportTime: 5, openTime: '07:00-23:00' },
+                    { id: 103, category: 'hotel', name: 'ICI HOTEL Tokyo Hatchobori', startTime: '21:35', endTime: '22:00', note: '先放行李再出門去超市買', transportType: 'walk', transportTime: 10, openTime: '24H' },
+                    { id: 104, category: 'food', name: 'Maruetsu Petit Hatchōbori 4-Chōme Shop', startTime: '22:00', endTime: '23:00', note: '★ 記得去超市/超商買明天的早餐！', transportType: 'walk', transportTime: 0, openTime: '08:00–23:00' }
                 ],
                 1: [ 
-                    { id: 200, category: 'walk', name: '飯店 -> 池袋車站', startTime: '06:00', endTime: '06:15', note: '步行前往車站', transportType: 'public', transportTime: 7 },
-                    { id: 201, category: 'transport', name: 'JR 山手線 (往東京)', startTime: '06:15', endTime: '06:46', note: '06:22 發車 (使用 JR PASS)\n確保 06:46 前抵達東京站轉乘', transportType: 'public', transportTime: 26 },
-                    { id: 202, category: 'transport', name: '新幹線 Tsubasa 123號', startTime: '07:00', endTime: '09:53', note: '07:12 東京發車 -> 09:53 山形著\n(使用 JR PASS / 指定席)\n可買車站便當', transportType: 'walk', transportTime: 30 },
+                    { id: 200, category: 'walk', name: '池袋車站', startTime: '06:00', endTime: '06:15', note: '飯店 → 池袋車站\n步行前往車站', transportType: 'public', transportTime: 7 },
+                    { id: 201, category: 'transport', name: '東京車站', startTime: '06:15', endTime: '06:46', note: '搭乘JR 山手線前往東京\n06:22 發車 (使用 JR PASS)\n確保 06:46 前抵達東京站轉乘', transportType: 'public', transportTime: 26 },
+                    { id: 202, category: 'transport', name: '山形車站', startTime: '07:00', endTime: '09:53', note: '新幹線 Tsubasa 123號\n07:12 東京發車 → 09:53 山形著\n(使用 JR PASS / 指定席)\n可買車站便當', transportType: 'walk', transportTime: 30 },
                     { id: 203, category: 'hotel', name: 'Super Hotel 放行李', startTime: '10:30', endTime: '11:00', note: '山形站西口天然溫泉', transportType: 'walk', transportTime: 10, openTime: '15:00 CI' },
                     { id: 204, category: 'food', name: '午餐：庄司屋 蕎麥麵', startTime: '11:30', endTime: '12:30', note: '山形名物', transportType: 'walk', transportTime: 30, openTime: '11:00-15:00' },
-                    { id: 205, category: 'transport', name: 'JR 山形 -> 大石田', startTime: '13:20', endTime: '14:21', note: '13:32 發車\n必須搭到!!', transportType: 'public', transportTime: 40 },
-                    { id: 206, category: 'sightseeing', name: '巴士 -> 銀山溫泉', startTime: '15:30', endTime: '16:10', note: '接駁巴士', transportType: 'walk', transportTime: 0 },
+                    { id: 205, category: 'transport', name: '大石田車站', startTime: '13:20', endTime: '14:21', note: 'JR 山形 → 大石田\n13:32 發車\n必須搭到!!', transportType: 'public', transportTime: 40 },
+                    { id: 206, category: 'sightseeing', name: '銀山溫泉', startTime: '15:30', endTime: '16:10', note: '接駁巴士', transportType: 'walk', transportTime: 0 },
                     { id: 207, category: 'food', name: '銀山溫泉散策', startTime: '16:10', endTime: '17:40', note: '必吃：野川豆腐屋 (豆腐/炸豆腐)、Haikara-san 通瑞 (咖哩麵包)。\n拍照點：紅橋、能登屋旅館', transportType: 'public', transportTime: 40, openTime: '店家約17:00關' },
-                    { id: 208, category: 'transport', name: '巴士 回程 -> 大石田', startTime: '17:20', endTime: '18:30', note: '末班車人多，請務必 17:20 (30分鐘前) 開始排隊！\n17:50 發車', transportType: 'public', transportTime: 50 },
+                    { id: 208, category: 'transport', name: '大石田車站', startTime: '17:20', endTime: '18:30', note: '搭乘接駁巴士回程\n末班車人多，請務必 17:20 (30分鐘前) 開始排隊！\n17:50 發車', transportType: 'public', transportTime: 50 },
                     { id: 209, category: 'food', name: '晚餐：米澤牛 登起波', startTime: '20:00', endTime: '21:30', note: '已訂位 (山形店)', transportType: 'walk', transportTime: 15, openTime: '17:00-22:00' },
                     { id: 210, category: 'hotel', name: '回 Super Hotel', startTime: '22:00', endTime: '22:00', note: '休息', transportType: 'walk', transportTime: 0 }
                 ],
                 2: [ 
-                    { id: 301, category: 'hotel', name: '飯店出發 -> 山形站', startTime: '06:00', endTime: '06:15', note: '早起出門。注意保暖：暖暖包/發熱衣/冰爪', transportType: 'public', transportTime: 18 },
-                    { id: 302, category: 'transport', name: 'JR 山形 -> 仙台', startTime: '06:33', endTime: '08:00', note: '必須搭到!!', transportType: 'walk', transportTime: 30 },
-                    { id: 303, category: 'sightseeing', name: '仙台東口 集合 (KKDay)', startTime: '08:30', endTime: '08:45', note: 'KKDay 觀光巴士集合點', transportType: 'public', transportTime: 0 },
-                    { id: 304, category: 'sightseeing', name: '藏王狐狸村', startTime: '09:00', endTime: '11:30', note: '跟團行程', transportType: 'public', transportTime: 60, ticketCost:'1000', openTime: '09:00-16:00' },
+                    { id: 301, category: 'hotel', name: '山形車站', startTime: '06:00', endTime: '06:15', note: '飯店出發 → 山形車站\n早起出門。注意保暖：暖暖包/發熱衣/冰爪', transportType: 'public', transportTime: 18 },
+                    { id: 302, category: 'transport', name: '仙台車站', startTime: '06:33', endTime: '08:00', note: '搭乘JR 從山形車站 → 仙台車站\n必須搭到!!', transportType: 'walk', transportTime: 30 },
+                    { id: 303, category: 'sightseeing', name: '仙台車站東口觀光巴士乘車處', startTime: '08:30', endTime: '08:45', note: 'KKDay 觀光巴士集合點', transportType: 'public', transportTime: 0 },
+                    { id: 304, category: 'sightseeing', name: '寶珠山 立石寺', startTime: '09:00', endTime: '11:30', note: '跟團行程', transportType: 'public', transportTime: 60, ticketCost:'1000', openTime: '09:00-16:00' },
                     { id: 305, category: 'sightseeing', name: '藏王樹冰', startTime: '13:00', endTime: '16:30', note: '跟團行程 (纜車+樹冰)\n山頂極冷，注意相機電池耗電', transportType: 'public', transportTime: 120, ticketCost:'3500', openTime: '08:30-17:00' },
                     { id: 306, category: 'transport', name: '巴士返回仙台', startTime: '16:30', endTime: '18:30', note: '行程結束', transportType: 'walk', transportTime: 30 },
-                    { id: 307, category: 'food', name: '晚餐：善治郎 牛舌', startTime: '19:00', endTime: '20:30', note: '仙台站前本店 (未訂位)', transportType: 'walk', transportTime: 40, openTime: '11:00-22:30' },
-                    { id: 308, category: 'transport', name: 'JR 仙台 -> 山形', startTime: '21:18', endTime: '22:43', note: '必須搭到!! (備案 22:15)', transportType: 'walk', transportTime: 0 }
+                    { id: 307, category: 'food', name: '烤牛舌 善治郎 仙台站前本店', startTime: '19:00', endTime: '20:30', note: '仙台站前本店 (未訂位)', transportType: 'walk', transportTime: 40, openTime: '11:00-22:30' },
+                    { id: 308, category: 'transport', name: '山形車站', startTime: '21:18', endTime: '22:43', note: '搭車JR 從仙台車站 → 山形車站\n必須搭到!! (備案 22:15)', transportType: 'walk', transportTime: 0 }
                 ],
                 3: [ 
-                    { id: 400, category: 'walk', name: '飯店 -> 山形車站', startTime: '05:30', endTime: '05:45', note: '辦理退房，前往車站', transportType: 'public', transportTime: 14 },
-                    { id: 401, category: 'transport', name: '新幹線 山形->郡山', startTime: '05:59', endTime: '07:23', note: 'TSUBASA 172 必須搭到!!', transportType: 'public', transportTime: 9 },
-                    { id: 402, category: 'transport', name: '新幹線 郡山->那須鹽原', startTime: '07:32', endTime: '07:54', note: 'YAMABIKO 206 必須搭到!!', transportType: 'walk', transportTime: 30 },
-                    { id: 403, category: 'transport', name: '巴士 -> 那須動物王國', startTime: '09:15', endTime: '10:25', note: '僅此一班 必須搭到!! (8:30先排隊)', transportType: 'walk', transportTime: 0 },
+                    { id: 400, category: 'walk', name: '山形車站', startTime: '05:30', endTime: '05:45', note: '飯店出發 → 山形車站\n辦理退房，前往車站', transportType: 'public', transportTime: 14 },
+                    { id: 401, category: 'transport', name: '郡山（福島）駛', startTime: '05:59', endTime: '07:23', note: '搭乘山形新幹線 →郡山轉乘東北新幹線\nTSUBASA 172 必須搭到!!', transportType: 'public', transportTime: 9 },
+                    { id: 402, category: 'transport', name: '那須鹽原車站', startTime: '07:32', endTime: '07:54', note: '搭乘東北新幹線→那須鹽原\nYAMABIKO 206 必須搭到!!', transportType: 'walk', transportTime: 30 },
+                    { id: 403, category: 'transport', name: '接駁巴士 → 那須動物王國', startTime: '09:15', endTime: '10:25', note: '僅此一班 必須搭到!! (8:30先排隊)', transportType: 'walk', transportTime: 0 },
                     { id: 404, category: 'sightseeing', name: '那須動物王國', startTime: '10:25', endTime: '15:15', note: '午餐：山貓餐廳', transportType: 'public', transportTime: 45, ticketCost:'2400', openTime: '10:00-16:00' },
-                    { id: 405, category: 'transport', name: '巴士 回程 -> 車站', startTime: '16:00', endTime: '17:00', note: '僅此一班 必須搭到!! (15:15先排隊)', transportType: 'walk', transportTime: 0 },
+                    { id: 405, category: 'transport', name: '巴士 回程 → 車站', startTime: '16:00', endTime: '17:00', note: '僅此一班 必須搭到!! (15:15先排隊)', transportType: 'walk', transportTime: 0 },
                     { id: 406, category: 'food', name: '空檔休息', startTime: '17:00', endTime: '18:00', note: '車站候車室 或 BECK\'S COFFEE', transportType: 'public', transportTime: 3 },
-                    { id: 407, category: 'transport', name: 'JR 那須鹽原 -> 上野', startTime: '18:03', endTime: '19:10', note: '必須搭到!!', transportType: 'walk', transportTime: 15 },
+                    { id: 407, category: 'transport', name: '上野車站', startTime: '18:03', endTime: '19:10', note: '搭乘JR 那須鹽原車站 → 上野車站 → 鶯谷車站 → 走路到飯店\n必須搭到!!', transportType: 'walk', transportTime: 15 },
                     { id: 408, category: 'hotel', name: 'LANDABOUT Check-in', startTime: '19:25', endTime: '20:00', note: '鶯谷站', transportType: 'walk', transportTime: 15, openTime: '24H' },
-                    { id: 409, category: 'food', name: '晚餐：Depot 或 AFURI', startTime: '20:15', endTime: '21:30', note: '有樂町附近', transportType: 'walk', transportTime: 30, openTime: '11:00-22:00' }
+                    { id: 409, category: 'food', name: 'Depot', startTime: '20:15', endTime: '21:30', note: '逛完街可以吃 AFURI\n有樂町附近', transportType: 'walk', transportTime: 30, openTime: '11:00-22:00' }
                 ],
                 4: [ 
                     { id: 500, category: 'walk', name: '飯店出發', startTime: '09:15', endTime: '09:30', note: '前往早餐店', transportType: 'walk', transportTime: 15 },
-                    { id: 501, category: 'food', name: '早餐：EGG BABY CAFE', startTime: '09:30', endTime: '10:30', note: '排隊名店', transportType: 'walk', transportTime: 20, openTime: '10:00-22:00' },
+                    { id: 501, category: 'food', name: 'EGG BABY CAFE', startTime: '09:30', endTime: '10:30', note: '排隊名店', transportType: 'walk', transportTime: 20, openTime: '10:00-22:00' },
                     { id: 502, category: 'sightseeing', name: '淺草散策', startTime: '11:00', endTime: '13:00', note: '雷門、仲見世通、西參道', transportType: 'walk', transportTime: 10, openTime: '24H' },
-                    { id: 503, category: 'food', name: '午餐：淺草今半', startTime: '13:00', endTime: '14:30', note: '國際通本店排隊', transportType: 'walk', transportTime: 30, openTime: '11:30-21:30' },
-                    { id: 504, category: 'sightseeing', name: '上野動物園 或 銀座', startTime: '15:00', endTime: '18:00', note: '視時間決定', transportType: 'walk', transportTime: 20, ticketCost:'600', openTime: '09:30-17:00' },
+                    { id: 503, category: 'food', name: '淺草今半 國際通本店', startTime: '13:00', endTime: '14:30', note: '國際通本店排隊', transportType: 'walk', transportTime: 30, openTime: '11:30-21:30' },
+                    { id: 504, category: 'sightseeing', name: '銀座', startTime: '15:00', endTime: '18:00', note: '上野動物園視情況\n視時間決定', transportType: 'walk', transportTime: 20, ticketCost:'600', openTime: '09:30-17:00' },
                     { id: 505, category: 'shopping', name: '東京車站一番街', startTime: '18:30', endTime: '20:00', note: '伴手禮採買', transportType: 'walk', transportTime: 20, openTime: '10:00-20:00' }
                 ],
                 5: [ 
-                    { id: 600, category: 'walk', name: '飯店 -> 早餐', startTime: '06:15', endTime: '06:30', note: '退房，前往麥當勞', transportType: 'walk', transportTime: 0 },
-                    { id: 601, category: 'food', name: '麥當勞早餐', startTime: '06:30', endTime: '07:00', note: '飯店附近', transportType: 'public', transportTime: 30, openTime: '06:00-24:00' },
-                    { id: 602, category: 'transport', name: 'JR 鶯谷 -> 東京', startTime: '07:30', endTime: '08:00', note: '前往車站等車', transportType: 'walk', transportTime: 30 },
-                    { id: 603, category: 'transport', name: 'JR 東京 -> 成田機場', startTime: '09:14', endTime: '10:30', note: 'JR總武線快速 必須搭到!!', transportType: 'walk', transportTime: 0 },
-                    { id: 604, category: 'flight', name: 'JX801 NRT->TPE', startTime: '13:45', endTime: '16:50', note: 'JX801 第二航廈出發', transportType: 'none', transportTime: 0 }
+                    { id: 600, category: 'walk', name: '飯店出發', startTime: '06:15', endTime: '06:30', note: '退房，前往麥當勞', transportType: 'walk', transportTime: 0 },
+                    { id: 601, category: 'food', name: 'McDonald\'s マクドナルド 鴬谷北口店', startTime: '06:30', endTime: '07:00', note: '可先去吃早餐再拿行李退房，或是買回飯店吃', transportType: 'public', transportTime: 30, openTime: '06:00-24:00' },
+                    { id: 602, category: 'transport', name: '東京車站', startTime: '07:30', endTime: '08:00', note: '搭乘JR 山手線鶯谷8:29前往東京車站', transportType: 'walk', transportTime: 30 },
+                    { id: 603, category: 'transport', name: '成田機場第二航廈', startTime: '09:14', endTime: '10:30', note: '搭乘N’EX 13 9:30發車前往成田第二航廈，10:28抵達', transportType: 'walk', transportTime: 0 },
+                    { id: 604, category: 'flight', name: 'JX801 NRT→TPE', startTime: '13:45', endTime: '16:50', note: 'JX801 第二航廈出發', transportType: 'none', transportTime: 0 }
                 ]
             };
             // 升級 key 到 v7
@@ -910,9 +908,9 @@
             const quickAddPacking = () => { if(newPackingItem.value) { lists.value.packing.push({name:newPackingItem.value, checked:false}); newPackingItem.value=''; }};
             // Recommendation
             const recommendations = [
-                {name:'樹冰羅曼', city:'山形', icon:'  🏔  ️'}, {name:'乃し梅', city:'山形', icon:'  🍑  '}, 
-                {name:'萩之月', city:'仙台', icon:'  🌕  '}, {name:'喜久福', city:'仙台', icon:'  🍵  '},
-                {name:'NY Cheese', city:'東京', icon:'  🧀  '}, {name:'Press Butter', city:'東京', icon:'  🍪  '}
+                {name:'樹冰羅曼', city:'山形', icon:'   🏔   ️'}, {name:'乃し梅', city:'山形', icon:'   🍑   '}, 
+                {name:'萩之月', city:'仙台', icon:'   🌕   '}, {name:'喜久福', city:'仙台', icon:'   🍵   '},
+                {name:'NY Cheese', city:'東京', icon:'   🧀   '}, {name:'Press Butter', city:'東京', icon:'   🍪   '}
             ];
             const addRecItem = (rec) => {
                 if(confirm(`加入 ${rec.name} ?`)) lists.value.shopping.push({name:rec.name, image:null, checked:false});
@@ -940,7 +938,6 @@
                     return total + amount;
                 }, 0);
             });
-
             // 2. 計算總日幣 (所有項目都換算成日幣加總，顯示用)
             const totalExpensesJPY = computed(() => {
                 return expenses.value.reduce((total, item) => {
@@ -953,7 +950,6 @@
                     return total + amount;
                 }, 0);
             });
-
             // 3. 分類統計：現金 vs 信用卡 (都以台幣計算)
             const expenseStats = computed(() => {
                 let cash = 0;
@@ -962,14 +958,12 @@
                 expenses.value.forEach(item => {
                     let amount = parseInt(item.amount || 0);
                     let valInTWD = 0;
-
                     // 統一換算成台幣
                     if (item.currency === 'JPY') {
                         valInTWD = Math.round(amount * RATE_JPY_TO_TWD);
                     } else {
                         valInTWD = amount;
                     }
-
                     if (item.payment === '信用卡') {
                         card += valInTWD;
                     } else {
@@ -978,7 +972,6 @@
                 });
                 return { cash, card };
             });
-
             const sortedExpenses = computed(()=>[...expenses.value].reverse());
             
             const openExpenseModal = () => { 
